@@ -1,0 +1,3 @@
+C:\Qt\Tools\CMake_64\bin\cmake.exe -E rm -f CMakeFiles\trabalho1.dir/objects.a
+C:\TDM-GCC-32\bin\ar.exe qc CMakeFiles\trabalho1.dir/objects.a @CMakeFiles\trabalho1.dir\objects1.rsp
+C:\TDM-GCC-32\bin\c++.exe -g -Wl,--whole-archive CMakeFiles\trabalho1.dir/objects.a -Wl,--no-whole-archive -o bin\trabalho1.exe -Wl,--out-implib,libtrabalho1.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\trabalho1.dir\linkLibs.rsp

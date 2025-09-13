@@ -1,0 +1,7 @@
+C:/Users/phbor/Documents/trabalho1/build/CMakeFiles/trabalho1.dir
+C:/Users/phbor/Documents/trabalho1/build/CMakeFiles/edit_cache.dir
+C:/Users/phbor/Documents/trabalho1/build/CMakeFiles/rebuild_cache.dir
+C:/Users/phbor/Documents/trabalho1/build/CMakeFiles/list_install_components.dir
+C:/Users/phbor/Documents/trabalho1/build/CMakeFiles/install.dir
+C:/Users/phbor/Documents/trabalho1/build/CMakeFiles/install/local.dir
+C:/Users/phbor/Documents/trabalho1/build/CMakeFiles/install/strip.dir
