@@ -1,9 +1,3 @@
-# Trabalho-IDJ-2025.2
-
-rmdir /S /Q build   -- deletar e criar nova build
-
-mkdir build
-
 cd build
 
 
