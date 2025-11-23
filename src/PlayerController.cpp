@@ -7,9 +7,7 @@
 #include "Game.h"
 
 
-PlayerController::PlayerController (GameObject& associated) : Component(associated) {
-
-}
+PlayerController::PlayerController (GameObject& associated) : Component(associated) {}
 
 void PlayerController::Start() {}
 
@@ -23,7 +21,6 @@ void PlayerController::Update (float dt) {
         float mouseX = input.GetMouseX() + Camera::pos.x;
         float mouseY = input.GetMouseY() + Camera::pos.y;
         associated.GetComponent<Character>()->Issue(Character::Command (Character::Command::SHOOT, mouseX, mouseY));
-        std::cout << "E isso executa? " << std::endl;
     }
 
     if ((input.IsKeyDown(SDLK_UP) || input.IsKeyDown('w')) && (input.IsKeyDown(SDLK_DOWN) || input.IsKeyDown('s')) && (input.IsKeyDown(SDLK_LEFT) || input.IsKeyDown('a')) && (input.IsKeyDown(SDLK_RIGHT) || input.IsKeyDown('d'))){

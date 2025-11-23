@@ -1,13 +1,16 @@
 #include "State.h"
 #include "Character.h"
+#include "Collider.h"
 #include "PlayerController.h"
 #include "SpriteRenderer.h"
+#include "WaveSpawner.h"
 #include "Zombie.h"
 #include "Rect.h"
 #include "TileMap.h"
 #include "TileSet.h"
 #include "InputManager.h"
 #include "Camera.h"
+#include "Collision.h"
 #include <algorithm>
 #include <iostream>
 
@@ -57,6 +60,14 @@ State::State() {
     AddObject(ch);
 
     Camera::Follow(ch);
+
+    GameObject* ws = new GameObject();
+
+    WaveSpawner* wsR = new WaveSpawner(*ws);
+
+    ws->AddComponent(wsR);
+
+    AddObject(ws);
 }
 
 bool State::QuitRequested() {
@@ -73,17 +84,33 @@ void State::Update(float dt) {
     Camera::Update(dt);
 
     // Atualiza todos os objetos
-
     for (size_t i = 0; i < objectArray.size(); ++i) {
         if (!objectArray[i]->IsDead()) {
             objectArray[i]->Update(dt);
         }
     }
+    // Verifica colisão
+    std::vector<int> v;
 
+    for (size_t i = 0; i < objectArray.size(); ++i) {
+        if (objectArray[i]->GetComponent<Collider>()) {
+            v.push_back(i);
+        }
+    }
+
+    if (v.size() >= 2){
+        for (size_t i = 0; i < v.size(); ++i) {
+            for (size_t j = i + 1; j < v.size(); ++j) {
+                if (Collision::IsColliding(objectArray[v[i]]->GetComponent<Collider>()->box, objectArray[v[j]]->GetComponent<Collider>()->box, objectArray[v[i]]->angleDeg, objectArray[v[j]]->angleDeg)){
+                    objectArray[v[i]]->NotifyCollision(*objectArray[v[j]]);
+                    objectArray[v[j]]->NotifyCollision(*objectArray[v[i]]);
+                }
+            }
+        }
+    }
     // Remove objetos mortos (de trás pra frente)
     for (int i = objectArray.size() - 1; i >= 0; --i) {
         if (objectArray[i]->IsDead()) {
-
             // Se o foco da câmera for esse objeto, desfoca
             if (Camera::GetFocus() == objectArray[i].get()) {
                 Camera::Unfollow();
@@ -92,11 +119,10 @@ void State::Update(float dt) {
             objectArray.erase(objectArray.begin() + i);
         }
     }
-
     if (InputManager::GetInstance().KeyPress(ESCAPE_KEY) || InputManager::GetInstance().QuitRequested()) {
         quitRequested = true;
     }
-
+/*
     if (InputManager::GetInstance().KeyPress(SPACE_KEY)) { // barra de espaço pressionada
         GameObject* zombiego = new GameObject(); // nova entidade zombie
 
@@ -107,7 +133,7 @@ void State::Update(float dt) {
         zombiego->box.y = InputManager::GetInstance().GetMouseY() + static_cast<int>(Camera::pos.y); // compensa deslocamento da câmera
 
         AddObject(zombiego);    // adiciona entidade ao vetor de ponteiros únicos de entidade em state
-    }
+    }*/
 }
 
 void State::Render() {
@@ -115,12 +141,10 @@ void State::Render() {
     if (objectArray.size() != 0){
         int i = 1;
         for (int index = 0; index <= objectArray.size() -1; index++){
-            std::cout << "Objeto que vai renderizar #" << index << " em " << objectArray[index].get() << std::endl;
             objectArray[index]->Render();  // chama render pra cada GameObject
             i++;
         }
     }
-    std::cout << "Tamanho RENDER DEPOIS: " << objectArray.size() << std::endl;
 }
 
 State::~State () {
@@ -143,12 +167,11 @@ std::weak_ptr<GameObject> State::AddObject(GameObject* go) {
     std::shared_ptr<GameObject> pointer(go);
     objectArray.push_back(pointer);
     if (pointer) {
-        std::cout << "criou um objeto válido\n" << go;
+        //std::cout << "criou um objeto válido\n" << go;
     }
     if (started) {
         pointer->Start();
     }
-    std::cout << "tá adicionando?\n";
     return pointer;
 }
 std::weak_ptr<GameObject> State::GetObjectPtr(GameObject* go) {

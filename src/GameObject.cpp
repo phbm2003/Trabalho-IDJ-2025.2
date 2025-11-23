@@ -8,18 +8,13 @@ GameObject::GameObject(){
 }
 
 GameObject::~GameObject(){
-    for (size_t i = 0; i < GetAllComponents().size(); ++i) {
-        RemoveComponent(components[i].get());
-    }
+    components.clear();
 }
 
 void GameObject::Update(float dt){
-    std::cout << "Quantos componentes tem: " << components.size() << "\n";
     for (int index = 0; index <= components.size() -1; index++){
-        std::cout << "Quantos componentes tem: " << index + 1 << "\n" << components[index].get() << "\n";
         components[index]->Update(dt);   // chama automaticamente método Update do objeto apontado Component
     }
-    std::cout << "Terminou?";
 }
 
 void GameObject::Render(){
@@ -47,11 +42,10 @@ void GameObject::AddComponent(Component* cpt){
 }
 
 void GameObject::RemoveComponent(Component* cpt){
-    std::cout << "tamanho COMPO: # " <<  components.size() << "\n" << std::endl;
     for (int index = 0; index <= components.size() -1; index++){
-        std::cout << "COMPONENTES: # " << index + 1 << "\n" << components[index].get() << std::endl;
         if (components[index].get() == cpt) {  // pega ponteiro do objto unique_ptr e compara com cpt
             components.erase(components.begin() + index); // chama automaticamente método Render do objeto apontado Component
+            return;
         }
     }
 }
@@ -65,4 +59,10 @@ void GameObject::Start(){
 
     started = true;
 
+}
+
+void GameObject::NotifyCollision(GameObject& other) {
+    for (int index = 0; index <= components.size() -1; index++){
+        components[index]->NotifyCollision(other);   // chama automaticamente método Update do objeto apontado Component
+    }
 }

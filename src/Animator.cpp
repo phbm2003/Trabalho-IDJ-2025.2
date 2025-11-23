@@ -28,10 +28,8 @@ void Animator::Update (float dt){
         float aux = associated.angleDeg;
         bool invertido = (aux > 90 || aux < -90);
         if (invertido) {
-            std::cout << "Flip invertido: " << animations.at(current).flip << "\n" << std::endl;
             associated.GetComponent<SpriteRenderer>()->SetFrame(currentFrame, animations.at(current).flip);
         } else {
-            std::cout << "Flip normal: " << animations.at(current).flip << "\n" << std::endl;
             associated.GetComponent<SpriteRenderer>()->SetFrame(currentFrame, animations.at(current).flip);
         };
     }

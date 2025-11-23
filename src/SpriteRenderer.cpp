@@ -7,7 +7,6 @@ SpriteRenderer::SpriteRenderer (GameObject& associated, std::string file, int fr
     associated.box.h = sprite.GetHeight();      // altura do frame
     associated.box.w = sprite.GetWidth();       // largura do frame
     sprite.SetFrame(0);                         // primeiro frame é o 0
-    std::cout << "SpriteRenderer carregado com sucesso!\n";
 
 }
 

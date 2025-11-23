@@ -3,16 +3,10 @@
 
 TileSet::TileSet (int tileWidth, int tileHeight, std::string file) : tileSet(file, 1, 1){
     if (tileSet.IsOpen()){
-        std::cout << "TileSet carregado com sucesso: " << file << std::endl;
-        std::cout << "tileWidth: " << tileWidth << std::endl;
-        std::cout << "tileHeight: " << tileHeight << std::endl;
         this->tileWidth = tileWidth;
         this->tileHeight = tileHeight;
         int largura = tileSet.GetWidth();
         int altura = tileSet.GetHeight();
-
-        std::cout << "Largura: " << largura << "\n" << std::endl;
-        std::cout << "Largura: " << altura << "\n" << std::endl;
 
         int frameCountW = largura / tileWidth;
         int frameCountH = altura / tileHeight;

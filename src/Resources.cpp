@@ -12,7 +12,6 @@ SDL_Texture* Resources::GetImage (std::string file){
             return index->second;
         }
     }
-    std::cout << "Tentando carregar imagem: " << file << std::endl;
 
     SDL_Texture* texture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), file.c_str());
 

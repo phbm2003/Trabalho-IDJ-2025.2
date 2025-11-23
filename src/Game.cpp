@@ -6,6 +6,8 @@
 #include "Game.h"
 #include "Resources.h"
 #include "InputManager.h"
+#include <cstdlib>
+#include <ctime>
 
 Game* Game::instance = nullptr;
 
@@ -30,21 +32,13 @@ void Game::run(){
     state->Start();
 
     while (state->QuitRequested() != true) {
-        std::cout << "1\n" << std::endl;
         CalculateDeltaTime();
-        std::cout << "2\n" << std::endl;
         InputManager::GetInstance().Update();
-        std::cout << "3\n" << std::endl;
         state->Update(dt);
-        std::cout << "4\n" << std::endl;
         SDL_RenderClear(renderer);
-        std::cout << "5\n" << std::endl;
         state->Render();
-        std::cout << "6\n" << std::endl;
         SDL_RenderPresent(renderer);
-        std::cout << "7\n" << std::endl;
         SDL_Delay(16);
-        std::cout << "8\n" << std::endl;
     }
     Resources::ClearImages();
     Resources::ClearMusics();
@@ -75,6 +69,8 @@ Game::Game(std::string title, int width, int height){
     } else {
         instance = this;
     }
+
+    srand(time(NULL));
 
     frameStart = SDL_GetTicks();
     dt = 0;

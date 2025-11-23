@@ -1,13 +1,13 @@
 #include "Gun.h"
 #include "Animator.h"
 #include "Bullet.h"
+#include "Character.h"
 #include "SpriteRenderer.h"
 #include "Game.h"
 #include <cmath>
 #include <iostream>
 #include "InputManager.h"
 #include "Camera.h"
-
 
 Gun::Gun (GameObject& associated, std::weak_ptr<GameObject> character) : Component(associated){
     this->character = character;
@@ -40,7 +40,7 @@ void Gun::Update(float dt) {
     float angleRad = angle * M_PI / 180.0f;
 
     // Distância do personagem até a arma (pode ajustar pra mais longe/perto)
-    float distancia = 100;
+    float distancia = 50;
 
     // Cria um vetor deslocado na direção do ângulo atual
     Vec2 offset = Vec2(distancia, 0).rotaciona(angleRad);
@@ -51,7 +51,6 @@ void Gun::Update(float dt) {
 
     // Atualiza rotação visual
     associated.angleDeg = angle;  // SDL usa rotação invertida
-    std::cout << "associated.angleDeg: " << associated.angleDeg << "\n" << std::endl;
     cdTimer.Update(dt);
 
     Animator* animator = associated.GetComponent<Animator>();
@@ -73,7 +72,7 @@ void Gun::Update(float dt) {
             cooldownState = 2;
             cdTimer.Restart();
 
-            reloadSound.Play();
+            reloadSound.Play(1);
         }
         if (angle > 90 || angle < -90) {
             //associated.angleDeg += 180;
@@ -117,9 +116,11 @@ void Gun::Update(float dt) {
     }
 }
 
-void Gun::Render (){
-}
+void Gun::Render (){}
+
 void Gun::Shoot(Vec2 target) {
+    bool isPlayer = associated.GetComponent<Gun>()->character.lock()->GetComponent<Character>() == associated.GetComponent<Gun>()->character.lock()->GetComponent<Character>()->player;
+    std::cout << "player: " << associated.GetComponent<Gun>()->character.lock()->GetComponent<Character>()->player << " atual: " << associated.GetComponent<Gun>()->character.lock()->GetComponent<Character>() << std::endl;
 
     if (cooldownState == 0) {
         Vec2 barrelOffsetLocal = Vec2(90, -5);
@@ -128,21 +129,26 @@ void Gun::Shoot(Vec2 target) {
         Vec2 direcao = target.sub(origem);
         float angle2 = direcao.fase();
 
-        float velocidade = 800.0f;
-        int dano = 10;
-        float dist = 1000.0f;
+        float velocidade;
+        int dano;
+        float dist;
 
-
-
-        //Vec2 cano = associated.box.getCentro().soma(Vec2(0, 0).rotaciona(angle2));
-        //bl->box.x = cano.x;
-        //bl->box.y = cano.y;
-        //bl->box.h = 36;
-        //bl->box.w = 20;
-
+        if (isPlayer) {
+            velocidade = 800.0f;
+            dano = 10;
+            dist = 1000.0f;
+        } else {
+            velocidade = 100.0f;
+            dano = 10;
+            dist = 1000.0f;
+        }
 
         // Verificar se o Character existe
         std::shared_ptr<GameObject> characterPtr = character.lock();
+
+        if (!characterPtr) {
+            return;
+        }
 
         // Pega a posição do mouse no mundo
         Vec2 mousePos = Vec2{static_cast<float>(InputManager::GetInstance().GetMouseX()), static_cast<float>(InputManager::GetInstance().GetMouseY())}.soma(Camera::pos);
@@ -151,11 +157,17 @@ void Gun::Shoot(Vec2 target) {
         Vec2 gunCenter = characterPtr->box.getCentro();
 
         // Calcula o vetor diferença e o ângulo
-        Vec2 diff = mousePos.sub(gunCenter);
-        angle2 = atan2(diff.y, diff.x); // <-- define o ângulo da mira
+        Vec2 diff;
 
-        // Atualiza a rotação visual
-        //associated.angleDeg = angle2 * 180 / M_PI; // SDL gira no sentido horário
+        if (isPlayer) {
+            diff = mousePos.sub(gunCenter);
+        } else {
+            if (!Character::player) return;
+            Vec2 playerPos = Character::player->GetAssociated().box.getCentro();
+            diff = playerPos.sub(gunCenter);
+        }
+
+        angle2 = atan2(diff.y, diff.x);
 
         // Posiciona a arma com um deslocamento (ajuste se necessário)
         Vec2 offset = Vec2(30, 0).rotaciona(angle2);
@@ -163,7 +175,7 @@ void Gun::Shoot(Vec2 target) {
         angle = angle2 * 180 / M_PI;
         GameObject* bl = new GameObject();
 
-        Bullet* bullet = new Bullet(*bl, angle2, velocidade, dano, dist);
+        Bullet* bullet = new Bullet(*bl, angle2, velocidade, dano, dist, associated.GetComponent<Gun>()->character);
         bl->AddComponent(bullet);
 
         //Posicionar o centro da arma no centro do corpo
@@ -171,28 +183,16 @@ void Gun::Shoot(Vec2 target) {
         aux.x = gunCenter.x  + offset.x;
         aux.y = gunCenter.y  + offset.y;
 
-        Vec2 barrelWorldPos = aux.getCentro().soma(
-            barrelOffsetLocal.rotaciona(angle2)
-            );
+        Vec2 barrelWorldPos = aux.getCentro().soma(barrelOffsetLocal.rotaciona(angle2));
 
         bl->box.x = barrelWorldPos.x - bl->box.w / 2;
         bl->box.y = barrelWorldPos.y - bl->box.h / 2;
-        if ((angle > 90 || angle < -90)){
-            //associated.GetComponent<SpriteRenderer>()->SetFrame(0, SDL_FLIP_NONE);
-            //associated.angleDeg += 180;
-        } else {
-            //associated.GetComponent<SpriteRenderer>()->SetFrame(0, SDL_FLIP_NONE);
-        }
 
         bl->angleDeg = angle + 90; // atualiza ângulo da arma e da bala
-        //associated.box.x = cano.x;
-        //associated.box.y = cano.y;
-
-        //associated.angleDeg = angle;
 
         Game::GetInstance().GetState().AddObject(bl);
 
-        shotSound.Play();
+        shotSound.Play(1);
         cooldownState = 1;
         cdTimer.Restart();
     } else {

@@ -29,7 +29,7 @@ void Camera::Update (float dt) {
         speed = Vec2(0, 0);
         InputManager& input = InputManager::GetInstance();
 
-        if (input.IsKeyDown(SDLK_UP) || input.IsKeyDown('w')) {
+        /*if (input.IsKeyDown(SDLK_UP) || input.IsKeyDown('w')) {
             speed.y = -300;
         }
         if (input.IsKeyDown(SDLK_DOWN) || input.IsKeyDown('s')) {
@@ -40,7 +40,7 @@ void Camera::Update (float dt) {
         }
         if (input.IsKeyDown(SDLK_RIGHT) || input.IsKeyDown('d')) {
             speed.x = 300;
-        }
+        }*/
 
         pos = pos.soma(speed.mult(dt));
 

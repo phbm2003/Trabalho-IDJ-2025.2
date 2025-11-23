@@ -1,10 +1,19 @@
 #include "Bullet.h"
 #include "Animator.h"
+#include "Character.h"
+#include "Collider.h"
 #include "SpriteRenderer.h"
+#include "Zombie.h"
 #include <cmath>
 #include <iostream>
 
-Bullet::Bullet (GameObject& associated, float angle, float speed, int damage, float maxDistance) : Component(associated) {
+Bullet::Bullet (GameObject& associated, float angle, float speed, int damage, float maxDistance,  std::weak_ptr<GameObject> shooter) : Component(associated) {
+    if (shooter.lock()->GetComponent<Character>()->player == shooter.lock()->GetComponent<Character>()) { // quem atirou foi o player
+        targetsPlayer = false;
+    } else {
+        targetsPlayer = true;
+    }
+
     SpriteRenderer* bulletS = new SpriteRenderer(associated, "bin/recursos/img/Bullet.png");
     associated.AddComponent(bulletS);
 
@@ -12,6 +21,10 @@ Bullet::Bullet (GameObject& associated, float angle, float speed, int damage, fl
 
     Animator* bulletA = new Animator(associated);
     associated.AddComponent(bulletA);  // adiciona componente à entidade
+
+    Collider* bulletC = new Collider(associated);
+    associated.AddComponent(bulletC);  // adiciona componente à entidade
+
     bulletA->AddAnimation("idle", Animation(0, 0, 0.2f)); // animação de parado
 
     bulletA->SetAnimation("idle"); // gun anda
@@ -28,23 +41,17 @@ Bullet::Bullet (GameObject& associated, float angle, float speed, int damage, fl
 }
 
 void Bullet::Update(float dt) {
-    std::cout << "Bullet Update start\n";
 
     associated.box.x += speed.x * dt;
     associated.box.y += speed.y * dt;
 
     distanceLeft -= std::sqrt(speed.x * speed.x + speed.y * speed.y) * dt;
-    std::cout << "distanceLeft=" << distanceLeft << "\n";
 
     if (distanceLeft <= 0) {
         //Vec2 speed = {0, 0};
-        std::cout << "Bullet delete request\n";
         associated.RequestDelete();
-        std::cout << "Concluído?\n";
         return;
     }
-
-    std::cout << "Bullet Update end\n";
 }
 
 void Bullet::Render (){}
@@ -52,3 +59,23 @@ int Bullet::GetDamage (){
     return damage;
 }
 
+void Bullet::NotifyCollision(GameObject& associated) {
+    auto ch = associated.GetComponent<Character>();
+    auto zb = associated.GetComponent<Zombie>();
+
+    // só colide com zumbi ou personagem
+    if (!ch && !zb) return;
+
+    if (zb) {
+        this->associated.RequestDelete();
+        return;
+    }
+
+    if (ch) {
+        if ((ch->player == ch && targetsPlayer)  ||
+            (ch->player != ch && !targetsPlayer)) {
+
+            this->associated.RequestDelete();
+        }
+    }
+}
