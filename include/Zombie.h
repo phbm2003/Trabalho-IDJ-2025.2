@@ -8,8 +8,15 @@ class Zombie : public Component {
 public:
     Zombie (GameObject& associated);
     void Damage (int damage);
-    void Update (float dt);
-    void Render ();
+    void Update (float dt) override;
+    void Render () override;
+
+    void NotifyCollision(GameObject& other) override;
+    static int contador;
+
+    ~Zombie() {
+        contador--;
+    }
 
 private:
     int hitpoints;

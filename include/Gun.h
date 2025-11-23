@@ -13,12 +13,22 @@ public:
     void Update (float dt);
     void Render ();
     void Shoot (Vec2 target);
-private:
+
+    void SetAngle(float angle) {
+        this->angle = angle;
+    }
+
+    float& GetAngle() {
+        return angle;
+    }
+    std::weak_ptr<GameObject> character;
     Sound shotSound;
+private:
+
     Sound reloadSound;
     int cooldownState;
     Timer cdTimer;
-    std::weak_ptr<GameObject> character;
+
     float angle;
 };
 

@@ -37,6 +37,8 @@ public:
     bool started;
 
     double angleDeg;
+
+    void NotifyCollision (GameObject& other);
 private:
     std::vector<std::shared_ptr<Component>> components;
     bool isDead;

@@ -10,6 +10,8 @@ public:
     virtual void Update (float dt) = 0; // virtual pura, função que é obrigatoriamente implementada por classes derivadas
     virtual void Render () = 0;
     virtual void Start();
+
+    virtual void NotifyCollision (GameObject& other);
 protected:
     GameObject& associated;
 };
