@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 
 class Collision {
 
@@ -11,6 +12,21 @@ class Collision {
 		// Para usar graus, forneça a sua própria implementação de Rotate,
 		// ou transforme os ângulos no corpo de IsColliding.
 		static inline bool IsColliding(Rect& a, Rect& b, float angleOfA, float angleOfB) {
+            //std::cout << "x333" << std::endl;
+
+            /*if (a == nullptr) {
+                std::cout << "[Collision] Rect inválido (nullptr)" << std::endl;
+                return false;
+            }*/
+
+            // checa dimensões válidas
+            if (a.w <= 0 || a.h <= 0 || b.w <= 0 || b.h <= 0) {
+                std::cout << "[Collision] Rect com largura/altura inválida" << std::endl;
+                return false;
+            }
+
+            //std::cout << "Rect a: " << a.x << "," << a.y << " w:" << a.w << " h:" << a.h << std::endl;
+           // std::cout << "Rect b: " << b.x << "," << b.y << " w:" << b.w << " h:" << b.h << std::endl;
 			Vec2 A[] = { Vec2( a.x, a.y + a.h ),
 						  Vec2( a.x + a.w, a.y + a.h ),
 						  Vec2( a.x + a.w, a.y ),
@@ -21,27 +37,32 @@ class Collision {
 						  Vec2( b.x + b.w, b.y ),
 						  Vec2( b.x, b.y )
 						};
-
+            //std::cout << "Rect a: " << a.x << "," << a.y << " w:" << a.w << " h:" << a.h << std::endl;
+            //std::cout << "Rect b: " << b.x << "," << b.y << " w:" << b.w << " h:" << b.h << std::endl;
+            //std::cout << "x334" << std::endl;
 			for (auto& v : A) {
+                //std::cout << "x335" << std::endl;
                 v = Rotate(v.sub(a.getCentro()), angleOfA).soma(a.getCentro());
 			}
 
 			for (auto& v : B) {
+                //std::cout << "x336" << std::endl;
                 v = Rotate(v.sub(b.getCentro()), angleOfB).soma(b.getCentro());
 			}
 
             Vec2 axes[] = { Norm(A[0].sub(A[1])), Norm(A[1].sub(A[2])), Norm(B[0].sub(B[1])), Norm(B[1].sub(B[2])) };
 
 			for (auto& axis : axes) {
+                //std::cout << "x337" << std::endl;
 				float P[4];
 
 				for (int i = 0; i < 4; ++i) P[i] = Dot(A[i], axis);
-
+                //std::cout << "x338" << std::endl;
 				float minA = *std::min_element(P, P + 4);
 				float maxA = *std::max_element(P, P + 4);
 
 				for (int i = 0; i < 4; ++i) P[i] = Dot(B[i], axis);
-
+                //std::cout << "x339" << std::endl;
 				float minB = *std::min_element(P, P + 4);
 				float maxB = *std::max_element(P, P + 4);
 

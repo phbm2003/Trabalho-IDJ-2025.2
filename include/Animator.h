@@ -14,6 +14,9 @@ public:
     void AddAnimation (std::string name, Animation anim);
     std::string current;
 
+    ~Animator() {
+        //std::cout << "805" << std::endl;
+    }
 private:
     std::unordered_map<std::string, Animation>animations;
     int frameStart;

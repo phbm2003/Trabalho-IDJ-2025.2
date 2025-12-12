@@ -2,6 +2,7 @@
 #define ANIMATION_H
 
 #include "SDL2/SDL_render.h"
+#include <iostream>
 class Animation {
 public:
     //Animation () : frameStart(0), frameEnd(0), frameTime(0.0f) {}
@@ -11,6 +12,10 @@ public:
     float frameTime;
 
     SDL_RendererFlip flip;
+
+    ~Animation() {
+        //std::cout << "804" << std::endl;
+    }
 };
 
 #endif // ANIMATION_H

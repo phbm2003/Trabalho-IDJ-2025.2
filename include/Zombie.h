@@ -3,6 +3,8 @@
 #include "Component.h"
 #include "Sound.h"
 #include "Timer.h"
+#include <iostream>
+#include <ostream>
 
 class Zombie : public Component {
 public:
@@ -16,6 +18,7 @@ public:
 
     ~Zombie() {
         contador--;
+        std::cout << "800" << std::endl;
     }
 
 private:

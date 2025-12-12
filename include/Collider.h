@@ -4,6 +4,8 @@
 #include "GameObject.h"
 #include "Rect.h"
 #include "Vec2.h"
+#include <iostream>
+#include <ostream>
 
 class Collider : public Component {
 public:
@@ -13,6 +15,10 @@ public:
     void Render ();
     void SetScale (Vec2 scale);
     void SetOffset (Vec2 offset);
+
+    ~Collider() {
+        std::cout << "806" << std::endl;
+    }
 private:
     Vec2 scale;
     Vec2 offset;

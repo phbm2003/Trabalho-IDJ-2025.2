@@ -4,6 +4,8 @@
 #include "Component.h"
 #include "Sprite.h"
 #include "GameObject.h"
+#include <iostream>
+#include <ostream>
 #include <string>
 
 class SpriteRenderer : public Component {
@@ -19,6 +21,10 @@ public:
     void SetcameraFollower(bool cond);
 
     void SetScale (float scaleX, float scaleY);
+
+    ~SpriteRenderer() {
+        //std::cout << "803" << std::endl;
+    }
 
 private:
     Sprite sprite;

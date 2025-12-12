@@ -38,6 +38,7 @@ public:
     }
 
     static int contador;
+    static bool playerDied;
 private:
     std::weak_ptr<GameObject> gun;
     std::queue<Command> taskQueue;
@@ -48,6 +49,7 @@ private:
 
     int cooldownState;
     Timer cdTimer;
+    std::string sprit;
 
 };
 
