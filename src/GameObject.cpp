@@ -8,17 +8,23 @@ GameObject::GameObject(){
 }
 
 GameObject::~GameObject(){
-    components.clear();
+    //std::cout << "tamanho components: " << components.size() << std::endl;
+    //std::cout << "793" << std::endl;
+    //components.clear();
+    //std::cout << "794" << std::endl;
+    /*for (size_t i = 0; i < GetAllComponents().size(); ++i) {
+        RemoveComponent(components[i].get());
+    }*/
 }
 
 void GameObject::Update(float dt){
-    for (int index = 0; index <= components.size() -1; index++){
+    for (int index = 0; index < components.size(); index++){
         components[index]->Update(dt);   // chama automaticamente método Update do objeto apontado Component
     }
 }
 
 void GameObject::Render(){
-    for (int index = 0; index <= components.size() -1; index++){
+    for (int index = 0; index < components.size(); index++){
         components[index]->Render();   // chama automaticamente método Render do objeto apontado Component
     }
 }
@@ -42,7 +48,7 @@ void GameObject::AddComponent(Component* cpt){
 }
 
 void GameObject::RemoveComponent(Component* cpt){
-    for (int index = 0; index <= components.size() -1; index++){
+    for (int index = 0; index < components.size(); index++){
         if (components[index].get() == cpt) {  // pega ponteiro do objto unique_ptr e compara com cpt
             components.erase(components.begin() + index); // chama automaticamente método Render do objeto apontado Component
             return;
@@ -52,7 +58,7 @@ void GameObject::RemoveComponent(Component* cpt){
 
 void GameObject::Start(){
     if (components.size() > 0){
-        for (int index = 0; index <= components.size() -1; index++){
+        for (int index = 0; index < components.size(); index++){
             components[index]->Start();  // chama Start pra cada component
         }
     }
@@ -62,7 +68,7 @@ void GameObject::Start(){
 }
 
 void GameObject::NotifyCollision(GameObject& other) {
-    for (int index = 0; index <= components.size() -1; index++){
+    for (int index = 0; index < components.size(); index++){
         components[index]->NotifyCollision(other);   // chama automaticamente método Update do objeto apontado Component
     }
 }

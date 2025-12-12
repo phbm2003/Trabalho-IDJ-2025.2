@@ -1,10 +1,12 @@
 #include "Game.h"
+#include "TitleState.h"
 
 using namespace std;
 
 int main (int argc, char** argv) {
     Game& game = Game::GetInstance();
+    TitleState* state = new TitleState();
+    game.Push(state);
     game.run();
-    //game.~Game(); destrutor é chamado automaticamente no fim da execução
     return 0;
 }

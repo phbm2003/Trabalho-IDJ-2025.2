@@ -1,5 +1,6 @@
 #include "WaveSpawner.h"
 #include "AIController.h"
+#include "EndState.h"
 #include "Zombie.h"
 #include "Camera.h"
 #include "Game.h"
@@ -7,11 +8,12 @@
 #include <cmath>
 #include <iostream>
 #include <ostream>
+#include "GameData.h"
 
 WaveSpawner::WaveSpawner(GameObject& associated) : Component(associated) {
-    Wave wave1(1, 1, 2);
-    Wave wave2(2, 4, 2);
-    Wave wave3(2, 8, 2);
+    Wave wave1(1, 5, 2);
+    Wave wave2(2, 10, 2);
+    Wave wave3(6, 15, 2);
 
     waves.push_back(wave1);
     waves.push_back(wave2);
@@ -27,12 +29,41 @@ WaveSpawner::WaveSpawner(GameObject& associated) : Component(associated) {
 
 void WaveSpawner::Update (float dt) {
 
+    if (currentWave >= waves.size()) {
+        associated.RequestDelete();
+        GameData::playerVictory = true;
+        Game::GetInstance().GetCurrentState().popRequested = true;
+        // Não force a transição aqui. Deixe o StageState fazer isso.
+        //Game::GetInstance().GetCurrentState().popRequested = true;
+        return;
+    }
+
+    // 2. CHECAGEM DE DERROTA (Morte do Player)
+    if (Character::player == nullptr || Character::player->dead) {
+        // Se o player morreu, marque a derrota e solicite o pop.
+        //if (Game::GetInstance().GetCurrentState().popRequested == false) {
+            GameData::playerDefeat = true; // <-- MARCA A DERROTA
+            Game::GetInstance().GetCurrentState().popRequested = true;
+            //Game::GetInstance().GetCurrentState().popRequested = true;
+        //}
+        return;
+    }
+
+    // Se o player morreu, não continua
+    //if (Character::playerDied) {
+    //    return;
+    //}
 
     zombieCooldownTimer.Update(dt);
     charCooldownTimer.Update(dt);
 
     Wave& w = waves[currentWave];
 
+    std::cout << "Wave: " << currentWave << " / " << waves.size()
+              << " | Zombies Spawned/Total: " << zombieCounter << "/" << w.zombies
+              << " | Chars Spawned/Total: " << charCounter << "/" << w.characters
+              << " | Zombs Alive: " << Zombie::contador
+              << " | Chars Alive: " << Character::contador << std::endl;
 
     if (zombieCounter < w.zombies) {
         if (zombieCooldownTimer.Get() > waves[currentWave].cooldown) {
@@ -54,10 +85,12 @@ void WaveSpawner::Update (float dt) {
             zombiego->box.x = cx + x;
             zombiego->box.y = cy + y;
 
-            Game::GetInstance().GetState().AddObject(zombiego);    // adiciona entidade ao vetor de ponteiros únicos de entidade em state
+            Game::GetInstance().GetCurrentState().AddObject(zombiego);    // adiciona entidade ao vetor de ponteiros únicos de entidade em state
 
             zombieCounter++;
             zombieCooldownTimer.Restart();
+
+
         }
     } else if (charCounter < w.characters) {
         if (charCooldownTimer.Get() > waves[currentWave].cooldown) {
@@ -82,19 +115,18 @@ void WaveSpawner::Update (float dt) {
             ch->box.x = cx + x;
             ch->box.y = cy + y;
 
-            Game::GetInstance().GetState().AddObject(ch);    // adiciona entidade ao vetor de ponteiros únicos de entidade em state
+            Game::GetInstance().GetCurrentState().AddObject(ch);    // adiciona entidade ao vetor de ponteiros únicos de entidade em state
 
             charCounter++;
             charCooldownTimer.Restart();
         }
 
     } else {
-
+        std::cout << "--- WAITING FOR ALL ENEMIES TO DIE ---" << std::endl;
         if ((Zombie::contador == 0) && (Character::contador == 0)) {
-            if (currentWave >= waves.size()) {
-                associated.RequestDelete();
-                return;
-            }
+            std::cout << "--- ADVANCING TO NEXT WAVE ---" << std::endl;
+            currentWave++;
+
 
             zombieCounter = 0;
             zombieCooldownTimer.Restart();
@@ -102,7 +134,7 @@ void WaveSpawner::Update (float dt) {
             charCounter = 0;
             charCooldownTimer.Restart();
 
-            currentWave++;
+            //currentWave++;
         }
     }
 }

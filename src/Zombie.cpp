@@ -95,7 +95,9 @@ void Zombie::Update (float dt){
     if (Character::player && !Character::player->dead && !dead) {
         Vec2 target = Character::player->GetAssociated().box.getCentro();
         Vec2 origem = associated.box.getCentro();
-        Vec2 direcao = (target.sub(origem)).normal();
+
+        Vec2 delta = target.sub(origem);
+        Vec2 direcao = delta.normal();
 
         float angle2 = direcao.fase();
         float velocidade = 100.0f;

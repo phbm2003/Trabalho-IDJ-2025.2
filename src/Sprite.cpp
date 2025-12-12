@@ -20,21 +20,24 @@ Sprite::Sprite(std::string file, int frameCountW, int frameCountH){
     scale = {1, 1};
     texture = nullptr;
     cameraFollower = false;
+    flip = SDL_FLIP_NONE;
     this->frameCountW = frameCountW;
     this->frameCountH = frameCountH;
     Open(file);
 }
 
 Sprite::~Sprite(){
+    //std::cout << "801" << std::endl;
     if (texture != nullptr) {
         //SDL_DestroyTexture(texture);
     }
+    //std::cout << "802" << std::endl;
 }
 
 void Sprite::Open(std::string file){
-    if (texture != nullptr) {
+    //if (texture != nullptr) {
         //SDL_DestroyTexture(texture);
-    }
+    //}
     //texture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), file.c_str());
     std::cout << "Tentando carregar imagem: " << file << std::endl;
     texture = Resources::GetImage(file);
@@ -108,12 +111,14 @@ void Sprite::SetFrame (int frame){
 
         SetClip(x, y, frameWidth, frameHeight);
     } else {
-        //std::cout << "Frame fora dos limites" << std::endl;
+        std::cout << "Frame fora dos limites" << std::endl;
     }
 }
 void Sprite::SetFrameCount (int frameCountW, int frameCountH){
     this->frameCountW = frameCountW;
     this->frameCountH = frameCountH;
+
+    //SetClip(0, 0, width / frameCountW, height / frameCountH);
 }
 
 void Sprite::SetCameraFollower(bool follower) {

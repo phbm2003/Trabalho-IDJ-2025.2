@@ -63,17 +63,21 @@ void TileMap::Render (){
 }
 
 void TileMap::RenderLayer (int layer){
-    for (int x = 0; x < mapWidth; x++) {
-        for (int y = 0; y < mapHeight; y++) {
-            // posição do tile no mapa
+    for (int y = 0; y < mapHeight; y++) {
+        for (int x = 0; x < mapWidth; x++) {
+
             int tilex = x * tileSet->GetTileWidth();
+            //int tilex = x * tileSet->GetTileWidth() + associated.box.x;
+            //int tiley = y * tileSet->GetTileHeight() + associated.box.y;
+
             int tiley = y * tileSet->GetTileHeight();
 
-            // posição do tile no mapa adicionado a posição relativa da box
+            //tileSet->RenderTile(index, tilex, tiley);
             tileSet->RenderTile(At(x, y, layer), tilex + associated.box.x, tiley + associated.box.y);
         }
     }
 }
+
 
 int TileMap::GetWidth (){
     return mapWidth;

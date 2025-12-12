@@ -190,7 +190,7 @@ void Gun::Shoot(Vec2 target) {
 
         bl->angleDeg = angle + 90; // atualiza ângulo da arma e da bala
 
-        Game::GetInstance().GetState().AddObject(bl);
+        Game::GetInstance().GetCurrentState().AddObject(bl);
 
         shotSound.Play(1);
         cooldownState = 1;

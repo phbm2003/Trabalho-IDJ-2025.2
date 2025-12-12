@@ -18,6 +18,10 @@ TileSet::TileSet (int tileWidth, int tileHeight, std::string file) : tileSet(fil
     }
 }
 void TileSet::RenderTile (unsigned index, float x, float y){
+    if (index < 0 || index >= tileCount) {
+        std::cout << "Tile inválido: " << index << std::endl;
+        return;
+    }
     if ((index >= 0) && (index <= tileCount-1)) {
         tileSet.SetFrame(index);
         tileSet.Render(x, y, tileWidth, tileHeight);
