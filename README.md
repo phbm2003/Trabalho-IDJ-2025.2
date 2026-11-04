@@ -1,4 +1,4 @@
-#Desenvolvimento de jogo do zumbi com C++ e SDL2
+# Desenvolvimento de jogo do zumbi com C++ e SDL2
 
 Projeto em equipe desenvolvido na disciplina de Introdução ao Desenvolvimento de Jogos (2025/2).  
 
