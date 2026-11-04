@@ -8,7 +8,7 @@ Principais tecnologias:
 - CMake para configuração e gerenciamento da compilação.  
 - Git/GitHub para controle de versão e colaboração.  
 
-
+Como rodar:  
 rmdir /S /Q build 
 
 
