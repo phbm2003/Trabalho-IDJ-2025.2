@@ -1,3 +1,14 @@
+#Desenvolvimento de jogo do zumbi com C++ e SDL2
+
+Projeto em equipe desenvolvido na disciplina de Introdução ao Desenvolvimento de Jogos (2025/2).  
+
+Principais tecnologias:  
+- C++ para implementação da lógica do jogo.  
+- SDL2 para recursos gráficos e interação.  
+- CMake para configuração e gerenciamento da compilação.  
+- Git/GitHub para controle de versão e colaboração.  
+
+
 rmdir /S /Q build 
 
 
